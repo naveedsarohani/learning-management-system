@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,3 +16,7 @@ Route::controller(UserController::class)->prefix('auth')->group(function () {
         Route::post('/update-password/{id}', 'updatePassword');
     });
 });
+
+/*Routes Maintained By Wajid*/
+#Course
+Route::apiResource('courses', CourseController::class)->middleware(['auth:sanctum', 'instructor_or_admin']);
