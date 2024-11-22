@@ -18,7 +18,7 @@ class AssessmentController extends Controller
     {
         try {
             $assessments = Assessment::with('course')->get();
-            return $this->successResponse(Status::OK, 'all assessments records', compact('assessments'));
+            return $this->successResponse(Status::OK, Message::ALL_RECORDS->set('assessments'), compact('assessments'));
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
         }
@@ -34,15 +34,15 @@ class AssessmentController extends Controller
 
         try {
             if (!$course = Course::find($request->course_id)) {
-                return $this->errorResponse(Status::NOT_FOUND, 'the provided course ID is invalid');
+                return $this->errorResponse(Status::NOT_FOUND, Message::INVALID_ID->set('course'));
             }
 
 
             if (!$course->assessment()->create($request->except('course_id'))) {
-                throw new Exception('failed to create new assessment');
+                throw new Exception(Message::FAILED_CREATE->set('assessment'));
             }
 
-            return $this->successResponse(Status::OK, 'a new assessment was created');
+            return $this->successResponse(Status::OK, Message::CREATED->set('assessment'));
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
         }
@@ -53,10 +53,10 @@ class AssessmentController extends Controller
         try {
             $assessment = Assessment::with('course')->find($assessmentId);
             if (!$assessment) {
-                return $this->errorResponse(Status::NOT_FOUND, 'the provided assessment ID is invalid');
+                return $this->errorResponse(Status::NOT_FOUND, Message::INVALID_ID->set('assessment'));
             };
 
-            return $this->successResponse(Status::OK, 'the requested assessment', compact('assessment'));
+            return $this->successResponse(Status::OK, Message::RQUESTED_RECORD->set('assessment'), compact('assessment'));
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
         }
@@ -72,14 +72,14 @@ class AssessmentController extends Controller
 
         try {
             if (!$assessment = Assessment::find($assessmentId)) {
-                return $this->errorResponse(Status::NOT_FOUND, 'the provided assessment ID is invalid');
+                return $this->errorResponse(Status::NOT_FOUND, Message::INVALID_ID->set('assessment'));
             };
 
             if (!$assessment->update($request->except('_method'))) {
-                throw new Exception('failed to update assessment');
+                throw new Exception(Message::FAILED_UPDATE->set('assessment'));
             }
 
-            return $this->successResponse(Status::OK, 'the assessment was updated');
+            return $this->successResponse(Status::OK, Message::UPDATED->set('assessment'));
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
         }
@@ -89,14 +89,14 @@ class AssessmentController extends Controller
     {
         try {
             if (!$assessment = Assessment::find($assessmentId)) {
-                return $this->errorResponse(Status::NOT_FOUND, 'the provide assessment ID is invalid');
+                return $this->errorResponse(Status::NOT_FOUND, Message::INVALID_ID->set('assessment'));
             };
 
             if (!$assessment->delete()) {
-                throw new Exception('failed to delete assessment');
+                throw new Exception(Message::FAILED_DELETED->set('assessment'));
             }
 
-            return $this->successResponse(Status::OK, 'the assessment was deleted');
+            return $this->successResponse(Status::OK, Message::DELETED->set('assessment'));
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
         }

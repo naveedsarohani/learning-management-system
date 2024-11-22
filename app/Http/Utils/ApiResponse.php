@@ -10,7 +10,7 @@ trait ApiResponse
     {
         $responseData = [
             'status' => $code->name,
-            'messages' => is_string($message) ? $message : $message->value,
+            'messages' =>  is_string($message) ? $message : $message->value,
             'data' => null
         ];
 
