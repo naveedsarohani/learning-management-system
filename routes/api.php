@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AssessmentController;
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,8 @@ Route::controller(UserController::class)->prefix('auth')->group(function () {
         Route::post('/update-password/{id}', 'updatePassword');
     });
 });
+
+Route::apiResource('assessments', AssessmentController::class);
 
 /*Routes Maintained By Wajid*/
 #Course

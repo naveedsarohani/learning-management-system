@@ -6,11 +6,11 @@ use App\Http\Utils\Status;
 
 trait ApiResponse
 {
-    public function successResponse(Status $code, string $message, array|string $data = null)
+    public function successResponse(Status $code, Message|string $message, array|string $data = null)
     {
         $responseData = [
-            'status' => true,
-            'messages' => $message,
+            'status' => $code->name,
+            'messages' => is_string($message) ? $message : $message->value,
             'data' => null
         ];
 
@@ -23,11 +23,11 @@ trait ApiResponse
         return response()->json($responseData, $code->value);
     }
 
-    public function errorResponse(Status $code, string $message, array|string $data = null)
+    public function errorResponse(Status $code, Message|string $message, array|string $data = null)
     {
         $responseData = [
-            'status' => false,
-            'messages' => $message,
+            'status' => $code->name,
+            'messages' => is_string($message) ? $message : $message->value,
         ];
 
         if ($data && is_array($data)) {

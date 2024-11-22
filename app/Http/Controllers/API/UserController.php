@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Utils\Action;
+use App\Http\Utils\Message;
 use App\Http\Utils\Role;
 use App\Http\Utils\Status;
 use App\Models\User;
@@ -47,7 +48,7 @@ class UserController extends Controller
         ]);
 
         if ($validation->fails()) {
-            return $this->errorResponse(Status::INVALID_REQUEST, 'there was validation failure', $validation->errors()->toArray());
+            return $this->errorResponse(Status::INVALID_REQUEST, Message::VALIDATION_FAILURE, $validation->errors()->toArray());
         }
 
         try {

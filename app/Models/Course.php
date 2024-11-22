@@ -20,4 +20,9 @@ class Course extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function assessment()
+    {
+        return $this->hasOne(Assessment::class, 'course_id', 'id');
+    }
 }
