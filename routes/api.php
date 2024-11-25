@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AssessmentController;
 use App\Http\Controllers\API\CourseController;
+use App\Http\Controllers\API\EnrollmentController;
 use App\Http\Controllers\API\SubmissionController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
@@ -30,5 +31,9 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 /*Routes Maintained By Wajid*/
+
 #Course
 Route::apiResource('courses', CourseController::class)->middleware(['auth:sanctum', 'instructor_or_admin']);
+
+#Enrollment
+Route::apiResource('enrollments', EnrollmentController::class)->middleware('auth:sanctum');
