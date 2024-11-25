@@ -15,4 +15,9 @@ class Assessment extends Model
     {
         return $this->belongsTo(Course::class);
     }
+
+    public function submission()
+    {
+        return $this->hasOne(Submission::class, 'assessment_id', 'id');
+    }
 }

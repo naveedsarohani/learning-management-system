@@ -6,12 +6,11 @@ use App\Http\Utils\Status;
 
 trait ApiResponse
 {
-    public function successResponse(Status $code, Message|string $message, array|string $data = null)
+    public function successResponse(Status $code, Message|string $message, array $data = null)
     {
         $responseData = [
             'status' => $code->name,
             'messages' =>  is_string($message) ? $message : $message->value,
-            'data' => null
         ];
 
         if ($data && is_array($data)) {

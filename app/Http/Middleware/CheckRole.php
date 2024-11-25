@@ -2,30 +2,25 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Utils\ApiResponse;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Utils\Status;
-use NunoMaduro\Collision\Adapters\Phpunit\State;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
+    use ApiResponse;
+
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()) {
-            return response()->json(['error' => 'Unauthorized'], Status::NOT_FOUND->value);
+        if (!$user = Auth::user()) {
+            return $this->errorResponse(Status::UNAUTHORIZED, 'the request was unauthorized');
         }
 
-        $user = Auth::user();
-
-        if ($user->role !== 'instructor' && $user->role !== 'admin') {
-            return response()->json(['error' => 'Forbidden'], 403);
+        if (!in_array($user->role, ['admin', 'instructor'])) {
+            return $this->errorResponse(Status::FORBIDDEN, 'the request was forbidden');
         }
 
         return $next($request);

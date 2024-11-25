@@ -50,4 +50,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function submission(){
+        return $this->hasOne(Submission::class,'student_id','id');
+    }
 }

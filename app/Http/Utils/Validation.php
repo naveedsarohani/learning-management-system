@@ -4,7 +4,7 @@ namespace App\Http\Utils;
 
 class Validation
 {
-    public static function assessment(string $requestType)
+    public static function assessment(string $requestType): array
     {
         return match ($requestType) {
             'create' => [
@@ -18,6 +18,24 @@ class Validation
                 'type' => 'sometimes|required|in:quiz,test,exam',
                 'time_limit' => 'sometimes|required|numeric|min:1',
                 'retakes_allowed' => 'sometimes|required|numeric|min:1'
+            ],
+        };
+    }
+
+    public static function submission(string $requestType): array
+    {
+        return match ($requestType) {
+            'create' => [
+                'assessment_id' => 'required',
+                'student_id' => 'required',
+                'score' => 'required|numeric|min:0',
+                'retake_count' => 'required|numeric|min:1|max:255',
+            ],
+            'update' => [
+                'assessment_id' => 'sometimes|required',
+                'student_id' => 'sometimes|required',
+                'score' => 'sometimes|required|numeric|min:0',
+                'retake_count' => 'sometimes|required|numeric|min:1|max:255',
             ],
         };
     }
