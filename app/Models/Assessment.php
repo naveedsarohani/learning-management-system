@@ -20,4 +20,9 @@ class Assessment extends Model
     {
         return $this->hasOne(Submission::class, 'assessment_id', 'id');
     }
+
+    public function question()
+    {
+        return $this->hasMany(Question::class);
+    }
 }
