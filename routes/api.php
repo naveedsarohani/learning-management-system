@@ -3,7 +3,11 @@
 use App\Http\Controllers\API\AssessmentController;
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\EnrollmentController;
+<<<<<<< HEAD
 use App\Http\Controllers\API\LessonController;
+=======
+use App\Http\Controllers\API\QuestionController;
+>>>>>>> origin/wajid
 use App\Http\Controllers\API\SubmissionController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
@@ -24,18 +28,16 @@ Route::controller(UserController::class)->prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('assessments', AssessmentController::class)->except(['index', 'show', 'update']);
     Route::apiResource('submissions', SubmissionController::class)->only(['index', 'show']);
+<<<<<<< HEAD
     Route::apiResource('lessons', LessonController::class);
+=======
+    Route::apiResource('enrollments', EnrollmentController::class);
+>>>>>>> origin/wajid
 
     Route::middleware('instructor_or_admin')->group(function () {
         Route::apiResource('assessments', AssessmentController::class)->only(['index', 'show', 'update']);
         Route::apiResource('submissions', SubmissionController::class)->except(['index', 'show']);
+        Route::apiResource('courses', CourseController::class);
+        Route::apiResource('questions', QuestionController::class);
     });
 });
-
-/*Routes Maintained By Wajid*/
-
-#Course
-Route::apiResource('courses', CourseController::class)->middleware(['auth:sanctum', 'instructor_or_admin']);
-
-#Enrollment
-Route::apiResource('enrollments', EnrollmentController::class)->middleware('auth:sanctum');
