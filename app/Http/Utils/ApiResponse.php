@@ -15,7 +15,7 @@ trait ApiResponse
 
         if ($data && is_array($data)) {
             foreach ($data as $key => $value) {
-                $responseData['data'][$key] = $value;
+                $responseData[$key] = $value;
             };
         }
 

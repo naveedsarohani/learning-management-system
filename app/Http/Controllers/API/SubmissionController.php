@@ -9,12 +9,13 @@ use App\Http\Utils\Validation;
 use App\Models\Submission;
 use App\Models\User;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class SubmissionController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
         try {
             $submissions = Submission::with('student')->with('assessment')->get();
@@ -24,7 +25,7 @@ class SubmissionController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validation = Validator::make($request->all(), Validation::submission('create'));
 
@@ -50,7 +51,7 @@ class SubmissionController extends Controller
         }
     }
 
-    public function show(string $submissionId)
+    public function show(string $submissionId): JsonResponse
     {
         try {
             if (!$submission = Submission::with('student')->with('assessment')->find($submissionId)) {
@@ -63,7 +64,7 @@ class SubmissionController extends Controller
         }
     }
 
-    public function update(Request $request, string $submissionId)
+    public function update(Request $request, string $submissionId): JsonResponse
     {
         $validation = Validator::make($request->all(), Validation::submission('update'));
 
@@ -86,7 +87,7 @@ class SubmissionController extends Controller
         }
     }
 
-    public function destroy(string $submissionId)
+    public function destroy(string $submissionId): JsonResponse
     {
         try {
             if (!$submission = submission::find($submissionId)) {

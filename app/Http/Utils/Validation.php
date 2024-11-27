@@ -39,4 +39,19 @@ class Validation
             ],
         };
     }
+
+    public static function lesson(string $requestType): array
+    {
+        return match ($requestType) {
+            'create' => [
+                'course_id' => 'required',
+                'title' => ['required', 'regex:/^[a-zA-Z][a-zA-Z0-9._@%&|-]*/', 'min:5', 'max:255'],
+                'content' => 'required|min:5',
+            ],
+            'update' => [
+                'title' => ['sometimes', 'required', 'regex:/^[a-zA-Z][a-zA-Z0-9._@%&|-]*/', 'min:5', 'max:255'],
+                'content' => 'sometimes|required|min:5',
+            ],
+        };
+    }
 }

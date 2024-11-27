@@ -9,12 +9,13 @@ use App\Http\Utils\Validation;
 use App\Models\Assessment;
 use App\Models\Course;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class AssessmentController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
         try {
             $assessments = Assessment::with('course')->get();
@@ -24,7 +25,7 @@ class AssessmentController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validation = Validator::make($request->all(), Validation::assessment('create'));
 
@@ -48,7 +49,7 @@ class AssessmentController extends Controller
         }
     }
 
-    public function show(string $assessmentId)
+    public function show(string $assessmentId): JsonResponse
     {
         try {
             $assessment = Assessment::with('course')->find($assessmentId);
@@ -62,7 +63,7 @@ class AssessmentController extends Controller
         }
     }
 
-    public function update(Request $request, string $assessmentId)
+    public function update(Request $request, string $assessmentId): JsonResponse
     {
         $validation = Validator::make($request->all(), Validation::assessment('update'));
 
@@ -85,7 +86,7 @@ class AssessmentController extends Controller
         }
     }
 
-    public function destroy(string $assessmentId)
+    public function destroy(string $assessmentId): JsonResponse
     {
         try {
             if (!$assessment = Assessment::find($assessmentId)) {

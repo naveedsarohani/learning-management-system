@@ -20,7 +20,7 @@ class EnrollmentController extends Controller
         if ($enrollments->isEmpty()) {
             return $this->successResponse(Status::NOT_FOUND, 'No enrollment records found');
         }
-        return $this->successResponse(Status::OK,'the requested course record',compact('enrollments'));
+        return $this->successResponse(Status::OK, 'the requested course record', compact('enrollments'));
     }
 
     /**
@@ -28,13 +28,13 @@ class EnrollmentController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'course_id' => 'required|exists:courses,id',
             'user_id' => 'required|exists:users,id',
         ]);
 
         if ($validator->fails()) {
-            return $this->errorResponse(Status::INVALID_REQUEST,'there was the validations error',$validator->errors()->toArray());
+            return $this->errorResponse(Status::INVALID_REQUEST, 'there was the validations error', $validator->errors()->toArray());
         }
 
         $enrollment = new Enrollment();
@@ -42,7 +42,7 @@ class EnrollmentController extends Controller
         $enrollment->user_id = $request->user_id;
         $enrollment->save();
 
-        return $this->successResponse(Status::OK,'the enrollment was added successfully',compact('enrollment'));
+        return $this->successResponse(Status::OK, 'the enrollment was added successfully', compact('enrollment'));
     }
 
     /**
@@ -73,13 +73,11 @@ class EnrollmentController extends Controller
     {
         $enrollment = Enrollment::find($id);
 
-        if(!$enrollment)
-        {
+        if (!$enrollment) {
             return $this->errorResponse(Status::NOT_FOUND, 'The requested enrollment was not found.');
         }
 
         $enrollment->delete();
         return $this->successResponse(Status::OK, 'The requested enrollment record delete successfully.', compact('enrollment'));
-
     }
 }
