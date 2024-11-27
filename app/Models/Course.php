@@ -25,4 +25,9 @@ class Course extends Model
     {
         return $this->hasOne(Assessment::class, 'course_id', 'id');
     }
+
+    public function lesson()
+    {
+        return $this->hasOne(Lesson::class, 'course_id', 'id');
+    }
 }
