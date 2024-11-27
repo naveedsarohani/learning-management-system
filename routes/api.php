@@ -26,11 +26,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('submissions', SubmissionController::class)->only(['index', 'show']);
     Route::apiResource('enrollments', EnrollmentController::class);
 
-    // Route::middleware('instructor_or_admin')->group(function () {
+    Route::middleware('instructor_or_admin')->group(function () {
         Route::apiResource('assessments', AssessmentController::class)->only(['index', 'show', 'update']);
         Route::apiResource('submissions', SubmissionController::class)->except(['index', 'show']);
         Route::apiResource('courses', CourseController::class);
-        // Route::apiResource('questions', QuestionController::class);
-        Route::post('questions', [QuestionController::class, 'store']);
-    // });
+        Route::apiResource('questions', QuestionController::class);
+    });
 });
