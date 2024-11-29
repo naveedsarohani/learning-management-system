@@ -55,7 +55,7 @@ class AnswerController extends Controller
         } catch(\Exception $e){
 
             Log::error($e->getMessage());
-            return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, 'Failed to add question. Please try again later.');
+            return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, 'Failed to add answer. Please try again later.');
         }
 
     }
