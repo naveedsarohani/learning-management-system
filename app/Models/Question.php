@@ -24,4 +24,9 @@ class Question extends Model
     {
         return $this->belongsTo(Assessment::class);
     }
+
+    public function answer()
+    {
+        return $this->hasOne(Answer::class);
+    }
 }

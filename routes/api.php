@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AnswerController;
 use App\Http\Controllers\API\AssessmentController;
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\EnrollmentController;
@@ -27,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('submissions', SubmissionController::class)->only(['index', 'show']);
     Route::apiResource('enrollments', EnrollmentController::class);
     Route::apiResource('lessons', LessonController::class);
+    Route::apiResource('answers', AnswerController::class);
 
     Route::middleware('instructor_or_admin')->group(function () {
         Route::apiResource('assessments', AssessmentController::class)->only(['index', 'show', 'update']);
