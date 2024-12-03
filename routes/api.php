@@ -23,14 +23,17 @@ Route::controller(UserController::class)->prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('assessments', AssessmentController::class)->except(['index', 'show', 'update']);
-    Route::apiResource('submissions', SubmissionController::class)->only(['index', 'show']);
+    Route::apiResource('assessments', AssessmentController::class)->only(['index', 'show']);
+    Route::apiResource('lessons', LessonController::class)->only(['index', 'show']);
+    Route::apiResource('submissions', SubmissionController::class)->only(['store']);
+
     Route::apiResource('enrollments', EnrollmentController::class);
-    Route::apiResource('lessons', LessonController::class);
 
     Route::middleware('instructor_or_admin')->group(function () {
-        Route::apiResource('assessments', AssessmentController::class)->only(['index', 'show', 'update']);
-        Route::apiResource('submissions', SubmissionController::class)->except(['index', 'show']);
+        Route::apiResource('assessments', AssessmentController::class)->except(['index', 'show']);
+        Route::apiResource('lessons', LessonController::class)->except(['index', 'show']);
+        Route::apiResource('submissions', SubmissionController::class)->except(['store']);
+
         Route::apiResource('courses', CourseController::class);
         Route::apiResource('questions', QuestionController::class);
     });

@@ -24,10 +24,16 @@ class UserController extends Controller
         try {
             $users = User::all();
 
-            if ($role = $request->get('role')) {
-                $users = $users->filter(function ($user) use ($role) {
-                    return $user->role === $role;
+            if (auth()->user()->role === 'admin') {
+                $users = $users->filter(function ($user) {
+                    return $user->role !== 'admin';
                 });
+            } elseif (auth()->user()->role === 'instructor') {
+                $users = $users->filter(function ($user) {
+                    return $user->role === 'student';
+                });
+            } else {
+                return $this->errorResponse(Status::FORBIDDEN, 'student is restricted to see the users details');
             }
 
             return $this->successResponse(Status::OK, 'all users data records', compact('users'));
@@ -43,7 +49,7 @@ class UserController extends Controller
             'email' => 'required|email:rfc,dns|unique:users,email',
             'password' => 'required|confirmed|min:8',
             'password_confirmation' => 'required',
-            'role' => 'required|in:admin,instructor,student',
+            'role' => 'required|in:instructor,student',
             'image' => 'required|mimes:jpg,jpeg,png|max:3072',
         ]);
 
@@ -108,12 +114,11 @@ class UserController extends Controller
         }
     }
 
-    public function update(Request $request, string $userId): JsonResponse
+    public function update(Request $request): JsonResponse
     {
         $validation = Validator::make($data = $request->all(), [
             'name' => 'sometimes|required|regex:/^[a-zA-Z]+[a-zA-Z0-9\s]*$/',
-            'email' => 'sometimes|required|email:rfc,dns|unique:users,email,except,id' . $userId,
-            'role' => 'sometimes|required|in:admin,instructor,student',
+            'email' => 'sometimes|required|email:rfc,dns|unique:users,email,except,email' . $request->email,
             'image' => 'sometimes|nullable:false|required|mimes:jpg,jpeg,png|max:3072',
         ]);
 
@@ -122,12 +127,12 @@ class UserController extends Controller
         }
 
         try {
-            if (!$user = User::find($userId)) {
-                return $this->errorResponse(Status::NOT_FOUND, 'invalid user ID');
-            }
+            if (!($id = auth()->id()) && !$user = User::find($id)) {
+                throw new Exception('there was an internal server error');
+            };
 
             if (($image = $request->file('image')) && File::exists(public_path($image_path = $user->image))) {
-                File::delete($image_path);
+                @File::delete($image_path);
                 $data['image'] = 'uploads/' . basename($image->move(public_path('uploads'), $image->hashName()));
             }
 
@@ -135,7 +140,7 @@ class UserController extends Controller
                 throw new Exception('something went wrong, failed to update the user data');
             }
 
-            return $this->successResponse(Status::OK, 'user data was updated successfullys', compact('user'));
+            return $this->successResponse(Status::OK, 'user data was updated successfully', compact('user'));
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
         }
@@ -172,7 +177,7 @@ class UserController extends Controller
         }
     }
 
-    public function updatePassword(Request $request, string $userId): JsonResponse
+    public function updatePassword(Request $request): JsonResponse
     {
         $validation = Validator::make($request->all(), [
             'old_password' => 'required',
@@ -185,9 +190,9 @@ class UserController extends Controller
         }
 
         try {
-            if (!$user = User::find($userId)) {
-                return $this->errorResponse(Status::NOT_FOUND, 'invalid user ID');
-            }
+            if (!($id = auth()->id()) && !$user = User::find($id)) {
+                throw new Exception('there was an internal server error');
+            };
 
             if (!Hash::check($request->old_password, $user->password)) {
                 return $this->errorResponse(Status::UNAUTHORIZED, 'old password is incorrect');
