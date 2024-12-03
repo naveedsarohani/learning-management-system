@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AnswerController;
 use App\Http\Controllers\API\AssessmentController;
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\EnrollmentController;
@@ -16,9 +17,9 @@ Route::controller(UserController::class)->prefix('auth')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/users', 'index');
         Route::get('/logout', 'invalidateLogin');
-        Route::put('/update/{id}', 'update');
+        Route::put('/update', 'update');
         Route::delete('/delete/{user}', 'delete');
-        Route::post('/update-password/{id}', 'updatePassword');
+        Route::post('/update-password', 'updatePassword');
     });
 });
 
@@ -28,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('submissions', SubmissionController::class)->only(['store']);
 
     Route::apiResource('enrollments', EnrollmentController::class);
+    Route::apiResource('answers', AnswerController::class);
 
     Route::middleware('instructor_or_admin')->group(function () {
         Route::apiResource('assessments', AssessmentController::class)->except(['index', 'show']);
