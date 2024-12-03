@@ -1,4 +1,5 @@
 <?php
+// app/Http/Controllers/API/CourseController.php
 
 namespace App\Http\Controllers\API;
 
@@ -8,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
@@ -16,21 +18,13 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::with('user')->get();
+        $courses = Course::with('user')->where('user_id', Auth::id())->get();
 
         if($courses->isEmpty())
         {
             return response()->json(['message' => 'No Records Found'], Status::NOT_FOUND->value);
         }
-        return response()->json(['course', $courses], Status::OK->value);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return response()->json(['courses' => $courses], Status::OK->value);
     }
 
     /**
@@ -39,8 +33,6 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-
-            'user_id' => 'required|exists:users,id',
             'title' => 'required|string',
             'description' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
@@ -51,7 +43,7 @@ class CourseController extends Controller
         }
 
         $course = new Course();
-        $course->user_id = $request->user_id;
+        $course->user_id = Auth::id();
         $course->title = $request->title;
         $course->description = $request->description;
 
@@ -78,6 +70,11 @@ class CourseController extends Controller
             return response()->json(['message' => 'Course Not Found'], Status::NOT_FOUND->value);
         }
 
+        if($course->user_id !== Auth::id())
+        {
+            return response()->json(['message' => 'Forbidden'], Status::FORBIDDEN->value);
+        }
+
         return response()->json(['course' => $course], Status::OK->value);
     }
 
@@ -87,7 +84,6 @@ class CourseController extends Controller
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(),[
-            'user_id' => 'exists:users,id',
             'title' => 'sometimes|string',
             'description' => 'sometimes|string',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
@@ -105,7 +101,11 @@ class CourseController extends Controller
             return response()->json(['message' => 'Course Not Found'], Status::NOT_FOUND->value);
         }
 
-        $course->user_id = $request->user_id;
+        if($course->user_id !== Auth::id())
+        {
+            return response()->json(['message' => 'Forbidden'], Status::FORBIDDEN->value);
+        }
+
         $course->title = $request->title;
         $course->description = $request->description;
 
@@ -139,6 +139,11 @@ class CourseController extends Controller
             return response()->json(['message' => 'Course Not Found'], Status::NOT_FOUND->value);
         }
 
+        if($course->user_id !== Auth::id())
+        {
+            return response()->json(['message' => 'Forbidden'], Status::FORBIDDEN->value);
+        }
+
         $imagePath = public_path('uploads/' . $course->image);
         if (File::exists($imagePath)) {
             File::delete($imagePath);
@@ -148,3 +153,4 @@ class CourseController extends Controller
         return response()->json(['message' => 'Course Delete Successfully'], Status::OK->value);
     }
 }
+?>
