@@ -127,7 +127,7 @@ class UserController extends Controller
         }
 
         try {
-            if (!($id = auth()->id()) && !$user = User::find($id)) {
+            if (!($id = auth()->id()) || !$user = User::find($id)) {
                 throw new Exception('there was an internal server error');
             };
 
@@ -190,7 +190,7 @@ class UserController extends Controller
         }
 
         try {
-            if (!($id = auth()->id()) && !$user = User::find($id)) {
+            if (!($id = auth()->id()) || !$user = User::find($id)) {
                 throw new Exception('there was an internal server error');
             };
 
