@@ -29,7 +29,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('lessons', LessonController::class)->only(['index', 'show']);
     Route::apiResource('submissions', SubmissionController::class)->only(['store']);
     Route::apiResource('questions', QuestionController::class)->only(['index', 'show']);
-    Route::apiResource('enrollments', EnrollmentController::class);
     Route::apiResource('answers', AnswerController::class);
 
     // Routes for instructors and admins
@@ -38,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('lessons', LessonController::class)->except(['index', 'show']);
         Route::apiResource('submissions', SubmissionController::class)->except(['store']);
         Route::apiResource('questions', QuestionController::class)->except(['index', 'show']);
+        Route::apiResource('enrollments', EnrollmentController::class);
         Route::apiResource('courses', CourseController::class);
     });
 });
