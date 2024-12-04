@@ -38,8 +38,12 @@ class SubmissionController extends Controller
             if (!$student = User::find($request->student_id)) {
                 return $this->errorResponse(Status::NOT_FOUND, Message::INVALID_ID->set('student'));
             }
-            if (!Assessment::find($request->assessment_id)) {
+            if (!$assessment = Assessment::find($request->assessment_id)) {
                 return $this->errorResponse(Status::NOT_FOUND, Message::INVALID_ID->set('submission'));
+            }
+
+            if ($request->retake_count > $assessment->retakes_allowed) {
+                return $this->errorResponse(Status::FORBIDDEN, 'You are exceeding the numbers of retakes allowed');
             }
 
             if (!$student->submission()->create($request->except(['course_id', 'student_id']))) {
