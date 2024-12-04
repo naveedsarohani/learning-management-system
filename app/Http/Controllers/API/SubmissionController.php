@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Utils\Message;
 use App\Http\Utils\Status;
 use App\Http\Utils\Validation;
+use App\Models\Assessment;
 use App\Models\Submission;
 use App\Models\User;
 use Exception;
@@ -37,7 +38,7 @@ class SubmissionController extends Controller
             if (!$student = User::find($request->student_id)) {
                 return $this->errorResponse(Status::NOT_FOUND, Message::INVALID_ID->set('student'));
             }
-            if (!User::find($request->assessment_id)) {
+            if (!Assessment::find($request->assessment_id)) {
                 return $this->errorResponse(Status::NOT_FOUND, Message::INVALID_ID->set('submission'));
             }
 
