@@ -34,7 +34,15 @@ class EnrollmentController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->errorResponse(Status::INVALID_REQUEST, 'there was the validations error', $validator->errors()->toArray());
+            return $this->errorResponse(Status::INVALID_REQUEST, 'There was a validation error', $validator->errors()->toArray());
+        }
+
+        $existingEnrollment = Enrollment::where('course_id', $request->course_id)
+            ->where('user_id', $request->user_id)
+            ->exists();
+
+        if ($existingEnrollment) {
+            return $this->errorResponse(Status::CONFLICT, 'You are already enrolled in this course');
         }
 
         $enrollment = new Enrollment();
@@ -42,7 +50,7 @@ class EnrollmentController extends Controller
         $enrollment->user_id = $request->user_id;
         $enrollment->save();
 
-        return $this->successResponse(Status::OK, 'the enrollment was added successfully', compact('enrollment'));
+        return $this->successResponse(Status::OK, 'You have been enrolled in the course successfully', compact('enrollment'));
     }
 
     /**
