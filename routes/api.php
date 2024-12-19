@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('lessons', LessonController::class)->only(['index', 'show']);
     Route::apiResource('submissions', SubmissionController::class)->only(['store']);
     Route::apiResource('questions', QuestionController::class)->only(['index', 'show']);
-    Route::apiResource('answers', AnswerController::class)->only(['index','show']);
+    Route::apiResource('answers', AnswerController::class)->only(['index','show','store']);
 
     // Routes for instructors and admins
     Route::middleware('instructor_or_admin')->group(function () {

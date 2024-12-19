@@ -21,7 +21,7 @@ class AnswerController extends Controller
             $answers = Answer::with('question')->get();
 
             if($answers->isEmpty())
-            {
+              {
                 return $this->errorResponse(Status::NOT_FOUND, 'No answer records found');
             }
             return $this->successResponse(Status::OK, "The requested answer records", compact('answers'));
@@ -41,7 +41,7 @@ class AnswerController extends Controller
             $validator = Validator::make($request->all(),[
                 'question_id' => 'required|exists:questions,id',
                 'answer_text' => 'required|string',
-                'is_correct' => 'required|boolean'
+                'is_correct' => 'required|numeric|max_digits:1'
              ]);
 
              if($validator->fails())
