@@ -19,7 +19,7 @@ class SubmissionController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $submissions = Submission::with('student')->with('assessment')->get();
+            $submissions = Submission::with('student', 'assessment')->get();
             return $this->successResponse(Status::OK, Message::ALL_RECORDS->set('submissions'), compact('submissions'));
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
@@ -50,7 +50,7 @@ class SubmissionController extends Controller
                 throw new Exception(Message::FAILED_CREATE->set('submission'));
             }
 
-            return $this->successResponse(Status::OK, Message::CREATED->set('submission'));
+            return $this->successResponse(Status::CREATED, Message::CREATED->set('submission'));
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
         }

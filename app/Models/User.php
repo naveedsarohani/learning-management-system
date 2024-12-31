@@ -38,6 +38,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'city_id',
         'image',
     ];
 
@@ -51,7 +52,18 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function submission(){
-        return $this->hasOne(Submission::class,'student_id','id');
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_id', 'id');
+    }
+
+    public function submission()
+    {
+        return $this->hasOne(Submission::class, 'student_id', 'id');
+    }
+
+    public function exam()
+    {
+        return $this->hasOne(Exam::class, 'instructor_id');
     }
 }

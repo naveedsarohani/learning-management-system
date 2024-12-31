@@ -7,6 +7,7 @@ use App\Http\Utils\Action;
 use App\Http\Utils\Message;
 use App\Http\Utils\Role;
 use App\Http\Utils\Status;
+use App\Models\City;
 use App\Models\User;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
@@ -22,7 +23,7 @@ class UserController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $users = User::all();
+            $users = User::with('city')->get();
 
             if (auth()->user()->role === 'admin') {
                 $users = $users->filter(function ($user) {
@@ -47,6 +48,7 @@ class UserController extends Controller
         $validation = Validator::make($data = $request->all(), [
             'name' => 'required|regex:/^[a-zA-Z]+[a-zA-Z0-9\s]*$/',
             'email' => 'required|email:rfc,dns|unique:users,email',
+            'city_id' => 'required|exists:cities,id',
             'password' => 'required|confirmed|min:8',
             'password_confirmation' => 'required',
             'role' => 'required|in:instructor,student',
@@ -118,7 +120,6 @@ class UserController extends Controller
     {
         $validation = Validator::make($data = $request->all(), [
             'name' => 'sometimes|required|regex:/^[a-zA-Z]+[a-zA-Z0-9\s]*$/',
-            'email' => 'sometimes|required|email:rfc,dns|unique:users,email,except,email' . $request->email,
             'image' => 'sometimes|nullable:false|required|mimes:jpg,jpeg,png|max:3072',
         ]);
 
@@ -131,8 +132,11 @@ class UserController extends Controller
                 throw new Exception('there was an internal server error');
             };
 
-            if (($image = $request->file('image')) && File::exists(public_path($image_path = $user->image))) {
-                @File::delete($image_path);
+            if (($image = $request->file('image'))) {
+                if (File::exists(public_path($image_path = $user->image))) {
+                    @File::delete($image_path);
+                };
+
                 $data['image'] = 'uploads/' . basename($image->move(public_path('uploads'), $image->hashName()));
             }
 
@@ -203,6 +207,16 @@ class UserController extends Controller
             }
 
             return $this->successResponse(Status::OK, 'password was updated successfully');
+        } catch (Exception $e) {
+            return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
+        }
+    }
+
+    public function cities()
+    {
+        try {
+            $cities = City::all();
+            return $this->successResponse(Status::OK, 'all users data records', compact('cities'));
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
         }

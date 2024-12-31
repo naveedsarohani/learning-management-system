@@ -63,7 +63,17 @@ class LessonController extends Controller
                 throw new Exception(Message::FAILED_CREATE->set('lesson'));
             }
 
-            return $this->successResponse(Status::OK, Message::CREATED->set('lesson'));
+            return $this->successResponse(Status::CREATED, Message::CREATED->set('lesson'));
+        } catch (Exception $e) {
+            return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
+        }
+    }
+
+    public function courseLessons(string $courseId)
+    {
+        try {
+            $lessons = Lesson::where('course_id', $courseId)->get();
+            return $this->successResponse(Status::OK, Message::ALL_RECORDS->set('lessons'), compact('lessons'));
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
         }
@@ -84,7 +94,7 @@ class LessonController extends Controller
 
     public function update(Request $request, string $lessonId)
     {
-        $validation = Validator::make($request->all(), Validation::lesson('update'));
+        $validation = Validator::make($data = $request->all(), Validation::lesson('update'));
 
         if ($validation->fails()) {
             return $this->errorResponse(Status::INVALID_REQUEST, Message::VALIDATION_FAILURE, $validation->errors()->toArray());
@@ -95,25 +105,14 @@ class LessonController extends Controller
                 return $this->errorResponse(Status::NOT_FOUND, Message::INVALID_ID->set('lesson'));
             };
 
-            $data = $request->except('content');
             if ($request->hasFile('content')) {
-                $validation = Validator::make($request->all(), [
-                    'content' => 'required|mimes:txt,pdf,docx,mp4,mkv,3gp,mpeg',
-                ]);
-
-                if ($validation->fails()) {
-                    return $this->errorResponse(Status::INVALID_REQUEST, Message::VALIDATION_FAILURE, $validation->errors()->toArray());
-                }
-
                 $content = $request->file('content');
                 $content_path = $content->move(public_path('uploads'), $content->hashName());
                 $data['content'] = 'uploads/' . basename($content_path);
-            } else {
-                $data['content'] = $request->input('content');
-            }
 
-            if (File::exists(public_path($lesson->content))) {
-                File::delete($lesson->content);
+                if (File::exists(public_path($lesson->content))) {
+                    File::delete($lesson->content);
+                }
             }
 
             if (!$lesson->update($data)) {

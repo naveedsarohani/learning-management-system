@@ -15,6 +15,7 @@ return new class extends Migration
             $table->enum('role', ['admin', 'instructor', 'student']);
             $table->string('image', 255)->nullable(true);
             $table->string('password');
+            $table->foreignid('city_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

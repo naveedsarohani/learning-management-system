@@ -43,7 +43,7 @@ class AssessmentController extends Controller
                 throw new Exception(Message::FAILED_CREATE->set('assessment'));
             }
 
-            return $this->successResponse(Status::OK, Message::CREATED->set('assessment'));
+            return $this->successResponse(Status::CREATED, Message::CREATED->set('assessment'));
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
         }

@@ -30,4 +30,9 @@ class Course extends Model
     {
         return $this->hasOne(Lesson::class, 'course_id', 'id');
     }
+
+    public function submission()
+    {
+        return $this->hasOne(Submission::class, 'course_id', 'id');
+    }
 }

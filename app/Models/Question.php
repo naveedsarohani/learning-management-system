@@ -22,7 +22,7 @@ class Question extends Model
 
     public function assessment()
     {
-        return $this->belongsTo(Assessment::class);
+        return $this->belongsTo(Assessment::class, 'assessment_id', 'id');
     }
 
     public function answer()
