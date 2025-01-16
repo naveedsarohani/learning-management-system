@@ -12,9 +12,11 @@ class ExamSubmission extends Model
     protected $fillable = [
         'exam_id',
         'student_id',
-        'total_marks',
+        'total_questions',
         'obtained_marks',
-        'is_passed',
+        'total_marks',
+        'total_correct',
+        'total_wrong',
     ];
 
     public function exam()

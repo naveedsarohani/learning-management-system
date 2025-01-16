@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->float('passing_percentage', 5, 2)->unsigned()->check('passing_percentage <= 100.00');
+            $table->float('time_allowed', 5, 2)->unsigned()->default(1.00);
+            $table->timestamp('starts_at');
             $table->timestamps();
         });
     }

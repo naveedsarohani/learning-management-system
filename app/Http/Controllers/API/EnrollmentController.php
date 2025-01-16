@@ -10,16 +10,9 @@ use Illuminate\Http\Request;
 
 class EnrollmentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $enrollments = Enrollment::with('course', 'student')->get();
-
-        if ($enrollments->isEmpty()) {
-            return $this->successResponse(Status::NOT_FOUND, 'No enrollment records found');
-        }
+        $enrollments = Enrollment::with('course.user', 'student.city')->get();
         return $this->successResponse(Status::OK, 'the requested course record', compact('enrollments'));
     }
 
@@ -42,7 +35,7 @@ class EnrollmentController extends Controller
         $enrollment->user_id = $request->user_id;
         $enrollment->save();
 
-        return $this->successResponse(Status::OK, 'the enrollment was added successfully', compact('enrollment'));
+        return $this->successResponse(Status::OK, 'you have been enrolled', compact('enrollment'));
     }
 
     /**
@@ -50,8 +43,7 @@ class EnrollmentController extends Controller
      */
     public function show(string $id)
     {
-        $enrollment = Enrollment::find($id);
-        if (!$enrollment) {
+        if (! $enrollment = Enrollment::with('course.user', 'student.city')->find($id)) {
             return $this->errorResponse(Status::NOT_FOUND, 'The requested enrollment was not found.');
         }
 

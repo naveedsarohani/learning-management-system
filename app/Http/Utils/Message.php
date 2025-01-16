@@ -18,5 +18,5 @@ enum Message: string
     case CREATED = 'a new %s was created';
     case UPDATED = 'the %s was updated';
     case DELETED = 'the %s was deleted';
-    case RQUESTED_RECORD = 'the requested $s record';
+    case RQUESTED_RECORD = 'the requested %s record';
 }

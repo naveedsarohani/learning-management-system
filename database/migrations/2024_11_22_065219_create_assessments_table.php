@@ -15,6 +15,7 @@ return new class extends Migration
             $table->enum('type', ['quiz', 'test', 'exam']);
             $table->integer('time_limit');
             $table->integer('retakes_allowed');
+            $table->decimal('unlocks_at', 5, 2);
             $table->timestamps();
         });
     }

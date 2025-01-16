@@ -15,6 +15,10 @@ class Answer extends Model
         'is_correct'
     ];
 
+    protected $casts = [
+        'answer_text' => 'array',
+    ];
+
     public function question()
     {
         return $this->belongsTo(Question::class);

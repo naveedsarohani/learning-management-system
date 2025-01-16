@@ -14,6 +14,8 @@ class Exam extends Model
         'title',
         'description',
         'passing_percentage',
+        'time_allowed',
+        'starts_at',
     ];
 
     public function instructor()

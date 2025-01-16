@@ -25,17 +25,17 @@ class UserController extends Controller
         try {
             $users = User::with('city')->get();
 
-            if (auth()->user()->role === 'admin') {
-                $users = $users->filter(function ($user) {
-                    return $user->role !== 'admin';
-                });
-            } elseif (auth()->user()->role === 'instructor') {
-                $users = $users->filter(function ($user) {
-                    return $user->role === 'student';
-                });
-            } else {
-                return $this->errorResponse(Status::FORBIDDEN, 'student is restricted to see the users details');
-            }
+            // if (auth()->user()->role === 'admin') {
+            //     $users = $users->filter(function ($user) {
+            //         return $user->role !== 'admin';
+            //     });
+            // } elseif (auth()->user()->role === 'instructor') {
+            //     $users = $users->filter(function ($user) {
+            //         return $user->role === 'student';
+            //     });
+            // } else {
+            //     return $this->errorResponse(Status::FORBIDDEN, 'student is restricted to see the users details');
+            // }
 
             return $this->successResponse(Status::OK, 'all users data records', compact('users'));
         } catch (Exception $e) {
@@ -93,8 +93,8 @@ class UserController extends Controller
                 throw new AuthenticationException('failed to generate authentication token');
             }
 
-            return $this->successResponse(Status::OK, 'user login was successful', [
-                'user' => Auth::user(),
+            return $this->successResponse(Status::OK, 'you have logged in successfully', [
+                'user' => Auth::user()->load('city'),
                 'auth_token' => $token,
                 'token_type' => 'bearer'
             ]);
@@ -110,7 +110,7 @@ class UserController extends Controller
         try {
             $request->user()->tokens()->delete();
 
-            return $this->successResponse(Status::OK, 'user was logged out successfully');
+            return $this->successResponse(Status::OK, 'you have logged out successfully');
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
         }

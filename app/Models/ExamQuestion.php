@@ -18,10 +18,9 @@ class ExamQuestion extends Model
         'carry_marks',
     ];
 
-    public function getAnswersAttribute($value)
-    {
-        return json_decode($value, true);
-    }
+    protected $casts = [
+        'answers' => 'array',
+    ];
 
     public function exam()
     {

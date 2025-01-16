@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Ramsey\Uuid\Type\Integer;
 
 return new class extends Migration
 {
@@ -15,8 +16,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('exam_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('student_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->tinyInteger('total_questions')->unsigned()->default(0);
             $table->float('obtained_marks', 8, 2)->unsigned();
-            $table->boolean('is_passed');
+            $table->float('total_marks', 8, 2)->unsigned();
+            $table->tinyInteger('total_correct')->unsigned()->default(0);
+            $table->tinyInteger('total_wrong')->unsigned()->default(0);
             $table->timestamps();
         });
     }

@@ -18,10 +18,6 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::with('user')->get();
-
-        if ($courses->isEmpty()) {
-            return response()->json(['message' => 'No Records Found'], Status::NOT_FOUND->value);
-        }
         return response()->json(['course', $courses], Status::OK->value);
     }
 
@@ -66,7 +62,7 @@ class CourseController extends Controller
      */
     public function show(string $id)
     {
-        $course = Course::find($id);
+        $course = Course::with('user')->find($id);
 
         if (!$course) {
             return response()->json(['message' => 'Course Not Found'], Status::NOT_FOUND->value);

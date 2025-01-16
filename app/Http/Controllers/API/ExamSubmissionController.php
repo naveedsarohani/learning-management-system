@@ -43,11 +43,11 @@ class ExamSubmissionController extends Controller
                 return $this->errorResponse(Status::NOT_FOUND, Message::INVALID_ID->set('student'));
             }
 
-            if (!$examSubmission = ExamSubmission::create($request->all())) {
+            if (!$examSubmission = $exam->submissions()->create($request->except('exam_id'))) {
                 throw new Exception(Message::FAILED_CREATE->set('exam submission'));
             }
 
-            return $this->successResponse(Status::CREATED, Message::CREATED->set('exam submission'));
+            return $this->successResponse(Status::CREATED, "Exam result submitted, Thank you");
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
         }
