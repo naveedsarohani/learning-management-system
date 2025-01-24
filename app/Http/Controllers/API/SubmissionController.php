@@ -29,11 +29,11 @@ class SubmissionController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validation = Validator::make($request->all(), Validation::submission('create'));
-
+    
         if ($validation->fails()) {
             return $this->errorResponse(Status::INVALID_REQUEST, Message::VALIDATION_FAILURE, $validation->errors()->toArray());
         }
-
+    
         try {
             if (!$student = User::find($request->student_id)) {
                 return $this->errorResponse(Status::NOT_FOUND, Message::INVALID_ID->set('student'));
@@ -41,15 +41,16 @@ class SubmissionController extends Controller
             if (!$assessment = Assessment::find($request->assessment_id)) {
                 return $this->errorResponse(Status::NOT_FOUND, Message::INVALID_ID->set('submission'));
             }
-
+    
             if ($request->retake_count > $assessment->retakes_allowed) {
                 return $this->errorResponse(Status::FORBIDDEN, 'You are exceeding the numbers of retakes allowed');
             }
-
-            if (!$student->submission()->create($request->except(['course_id', 'student_id']))) {
-                throw new Exception(Message::FAILED_CREATE->set('submission'));
-            }
-
+    
+            $submission = $student->submission()->updateOrCreate([
+                'assessment_id' => $request->assessment_id,
+                'student_id' => $request->student_id,
+            ], $request->except(['course_id', 'student_id']));
+    
             return $this->successResponse(Status::CREATED, 'assessment has been completed');
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());

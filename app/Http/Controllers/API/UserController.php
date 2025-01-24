@@ -24,19 +24,6 @@ class UserController extends Controller
     {
         try {
             $users = User::with('city')->get();
-
-            // if (auth()->user()->role === 'admin') {
-            //     $users = $users->filter(function ($user) {
-            //         return $user->role !== 'admin';
-            //     });
-            // } elseif (auth()->user()->role === 'instructor') {
-            //     $users = $users->filter(function ($user) {
-            //         return $user->role === 'student';
-            //     });
-            // } else {
-            //     return $this->errorResponse(Status::FORBIDDEN, 'student is restricted to see the users details');
-            // }
-
             return $this->successResponse(Status::OK, 'all users data records', compact('users'));
         } catch (Exception $e) {
             return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());

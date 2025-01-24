@@ -15,49 +15,53 @@ use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
-Route::get('/cities', [UserController::class, 'cities']);
+Route::controller(UserController::class)->group(function(){
+    Route::get('/cities', 'cities');
 
-
-Route::controller(UserController::class)->prefix('auth')->group(function () {
-    Route::post('/login', 'validateLogin');
-    Route::post('/register', 'register');
-
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('auth')->group(function(){
         Route::get('/users', 'index');
-        Route::get('/logout', 'invalidateLogin');
-        Route::put('/update', 'update');
-        Route::delete('/delete/{user}', 'delete');
-        Route::post('/update-password', 'updatePassword');
+        Route::post('/login', 'validateLogin');
+        Route::post('/register', 'register');
     });
 });
 
+Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
+Route::apiResource('lessons', LessonController::class)->only(['index', 'show']);
+
+// protected routes
 Route::middleware('auth:sanctum')->group(function () {
+    // auth
+    Route::controller(UserController::class)->prefix('auth')->group(function(){
+        Route::get('/logout', 'invalidateLogin');
+        Route::put('/update', 'update');
+        Route::delete('/delete/{user}', 'delete');
+        Route::post('/update-password', 'updatePassword'); 
+    });
+
+    // resource apivzs
+    Route::apiResource('enrollments', EnrollmentController::class)->only(['index', 'show', 'store']);
     Route::apiResource('assessments', AssessmentController::class)->only(['index', 'show']);
-    Route::apiResource('lessons', LessonController::class)->only(['index', 'show']);
-    Route::get('/lessons/courses/{courseId}', [LessonController::class, 'courseLessons']);
-    Route::apiResource('submissions', SubmissionController::class)->only(['store']);
-    Route::apiResource('courses', CourseController::class);
+    Route::apiResource('submissions', SubmissionController::class)->only(['index', 'show']);
     Route::apiResource('questions', QuestionController::class)->only(['index', 'show']);
+    Route::apiResource('answers', AnswerController::class)->only(['index', 'show']);
     Route::apiResource('progresses', ProgressController::class)->except(['destroy']);
-
-    Route::apiResource('enrollments', EnrollmentController::class);
-    Route::apiResource('answers', AnswerController::class);
-
-    // exam/test
+    Route::apiResource('submissions', SubmissionController::class)->only(['store']);
     Route::apiResource('exams', ExamController::class)->only(['index', 'show']);
     Route::apiResource('exam-questions', ExamQuestionController::class)->only(['index', 'show']);
-    Route::apiResource('exam-submissions', ExamSubmissionController::class)->only(['store', 'index', 'show']);
+    Route::apiResource('exam-submissions', ExamSubmissionController::class)->except(['destroy']);
 
-    Route::middleware('instructor_or_admin')->group(function () {
+    // only admin/instructor
+    Route::middleware('instructor_or_admin')->group(function(){
+        Route::apiResource('courses', CourseController::class)->except(['index', 'show']);
+        Route::apiResource('enrollments', EnrollmentController::class)->except(['index', 'show', 'store']);
+        Route::apiResource('progresses', ProgressController::class)->only(['destroy']);
         Route::apiResource('assessments', AssessmentController::class)->except(['index', 'show']);
         Route::apiResource('lessons', LessonController::class)->except(['index', 'show']);
-        Route::apiResource('submissions', SubmissionController::class)->except(['store']);
         Route::apiResource('questions', QuestionController::class)->except(['index', 'show']);
-        Route::apiResource('progresses', ProgressController::class)->only(['destroy']);
-
-        // exam/test
+        Route::apiResource('answers', AnswerController::class)->except(['index', 'show']);
+        Route::apiResource('submissions', SubmissionController::class)->only(['destroy']);
         Route::apiResource('exams', ExamController::class)->except(['index', 'show']);
         Route::apiResource('exam-questions', ExamQuestionController::class)->except(['index', 'show']);
-        Route::apiResource('exam-submissions', ExamSubmissionController::class)->except(['store', 'index', 'show']);
+        Route::apiResource('exam-submissions', ExamSubmissionController::class)->only(['destroy']);
     });
 });

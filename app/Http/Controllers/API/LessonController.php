@@ -69,16 +69,6 @@ class LessonController extends Controller
         }
     }
 
-    public function courseLessons(string $courseId)
-    {
-        try {
-            $lessons = Lesson::where('course_id', $courseId)->get();
-            return $this->successResponse(Status::OK, Message::ALL_RECORDS->set('lessons'), compact('lessons'));
-        } catch (Exception $e) {
-            return $this->errorResponse(Status::INTERNAL_SERVER_ERROR, $e->getMessage());
-        }
-    }
-
     public function show(string $lessonId)
     {
         try {
