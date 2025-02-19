@@ -58,7 +58,7 @@ class QuestionController extends Controller
 
             $answer = new Answer();
             $answer->question_id = $newAns['question_id'];
-            $answer->answer_text = json_encode($newAns['answer_text']);
+            $answer->answer_text = $newAns['answer_text'];
             $answer->is_correct = $newAns['is_correct'];
             $answer->save();
 

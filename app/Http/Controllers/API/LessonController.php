@@ -18,7 +18,7 @@ class LessonController extends Controller
     public function index(Request $request)
     {
         try {
-            $lessons = Lesson::with('course')->get();
+            $lessons = Lesson::with('course.user')->get();
 
             return $this->successResponse(Status::OK, Message::ALL_RECORDS->set('lessons'), compact('lessons'));
         } catch (Exception $e) {
